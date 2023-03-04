@@ -1,11 +1,23 @@
+import React from 'react'
+import {createBrowserRouter,RouterProvider} from "react-router-dom"
+//pages
+import IndexPage from "./pages/IndexPage";
+import LoginPage from './pages/LoginPage';
+import PageNotFound from './pages/PageNotFound';
 
-import './App.css'
 
-function App() {
+const router = createBrowserRouter([
+  { path:"/", element: <IndexPage/> },
+  { path:"/login", element: <LoginPage/> },
+
+  { path:"*", element: <PageNotFound/> },
+])
+
+const App = () => {
   return (
-    <div className="bg-red-500">
-      Testing Here
-    </div>
+    <main>
+      <RouterProvider router={router}></RouterProvider>
+    </main>
   )
 }
 
