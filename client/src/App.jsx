@@ -1,5 +1,7 @@
 import React from 'react'
 import {createBrowserRouter,RouterProvider} from "react-router-dom"
+import axios from 'axios'
+axios.defaults.baseURL = "http://localhost:5000" 
 //pages
 import IndexPage from "./pages/IndexPage";
 import LoginPage from './pages/LoginPage';
