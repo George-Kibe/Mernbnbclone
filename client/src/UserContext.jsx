@@ -6,21 +6,21 @@ export const UserContext = createContext({});
 
 export const UserContextProvider = ({children}) => {
     const [user, setUser] = useState(null)
-
+    const [ready, setReady] = useState(false)
+    const token = localStorage.getItem("token")
+    
     useEffect(() => {
-      if (!user) {
-        axios.get("/users/profile")
+      
+      if (token){
+        const decoded = jwt_decode(token);
+        setUser(decoded)
+        setReady(true)
       }
-
-      const token = localStorage.getItem("token")
-      const decoded = jwt_decode(token);
-      setUser(decoded)
-      console.log(decoded);
-    }, [])
+    }, [token])
     
 
     return (
-        <UserContext.Provider value={{user, setUser}}>
+        <UserContext.Provider value={{user, setUser, ready}}>
             {children}
         </UserContext.Provider>
     )
