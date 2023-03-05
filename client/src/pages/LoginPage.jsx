@@ -1,22 +1,26 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import toast, {Toaster} from "react-hot-toast"
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../UserContext'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const {setUser} = useContext(UserContext)
 
   const handleLogin = async(e) => {
     e.preventDefault();
     toast.success("Loggin In")
     try {
       const response = await axios.post("/users/login", {email, password})
-      const token = response.data;
+      //console.log(response)
+      setUser(response.data.userDoc)
+      const token = response.data.token;
       toast.success("Login successful")
       //console.log(token)
       localStorage.setItem("token", token)

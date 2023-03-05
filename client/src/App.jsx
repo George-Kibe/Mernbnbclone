@@ -1,5 +1,6 @@
 import React from 'react'
 import {createBrowserRouter,RouterProvider} from "react-router-dom"
+import { UserContextProvider } from './UserContext'
 import axios from 'axios'
 axios.defaults.baseURL = "http://127.0.0.1:5000" 
 //axios.defaults.withCredentials = true;
@@ -19,9 +20,11 @@ const router = createBrowserRouter([
 
 const App = () => {
   return (
-    <main>
-      <RouterProvider router={router}></RouterProvider>
-    </main>
+    <UserContextProvider>
+      <main>
+        <RouterProvider router={router}></RouterProvider>
+      </main>
+    </UserContextProvider>
   )
 }
 

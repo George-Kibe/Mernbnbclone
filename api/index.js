@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const jwt = require("jsonwebtoken")
+const cookieparser = require("cookie-parser")
 const dotenv = require("dotenv")
 dotenv.config()
 const User = require("./models/User")
@@ -14,6 +15,8 @@ const jwtSecret = 'ugbnuwnfuwi7371gyrjfkwg20';
 const PORT = 5000
 app.use(cors());
 app.use(express.json())
+app.use(cookieparser());
+
 app.get("/", (req,res) => {
     res.json(`Server running on port ${PORT}. Working Fine!`)
 })
@@ -46,10 +49,10 @@ app.post('/users/login', async(req,res) => {
         const passwordOk = bcrypt.compareSync(password, userDoc.password);
         if (passwordOk){
             const time = new Date();
-            const token = jwt.sign({email:userDoc.email, id:userDoc._id, time}, jwtSecret, {});            
+            const token = jwt.sign({name:userDoc.name, email:userDoc.email, id:userDoc._id, time}, jwtSecret, {});            
             console.log(time);
             if (token){
-                res.cookie('token', token).status(202).json(token);
+                res.cookie('token', token).status(202).json({userDoc,token});
                 return
             } else {
                 res.status(422).json("Token Genrating Error! Try Again!");
@@ -60,13 +63,16 @@ app.post('/users/login', async(req,res) => {
             res.status(422).json("Invalid email or Password");
             return
         }
-        res.status(202).json("User Found!")
     }else{
         res.status(404).json("Not Found!")
     }
 })
 
+app.get("/users/profile", async(req, res) => {
+    const token = req.cookies;
 
+    res.json(token)
+})
 
 app.listen(PORT, () => {
     console.log(`Backend server is running on http://localhost:${PORT}!`)
