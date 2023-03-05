@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import toast, {Toaster} from "react-hot-toast"
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
@@ -8,9 +9,12 @@ const RegisterPage = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const registerUser = async(e) => {
     e.preventDefault()
+    setLoading(true)
+    toast.success('Registering user...');
     try {
       const response = await axios.post("/users/register", {
         name,
@@ -18,14 +22,19 @@ const RegisterPage = () => {
         password
       })
       setName(""); setEmail(""); setPassword("")
+      setLoading(false)
+      toast.success("Registration Successful. You can now Login.")
     } catch (error) {
-      
+      setLoading(false)
+      toast.error("Registration failed. Try Again or contact Admin!")
+      //toast.error(error.message)
     }
   
   }
 
   return (
     <div className='p-4 flex flex-col min-h-screen'>
+      <Toaster position="top-center" reverseOrder={false}></Toaster>
       <Header />
         <div className='mt-4 grow flex items-center justify-around'>
           <div className="mb-64">
