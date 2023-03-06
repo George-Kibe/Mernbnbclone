@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Link, useParams, Navigate, useNavigate } from 'react-router-dom'
 import Perks from '../components/Perks';
 
-const PlacesPage = ({toast}) => {
+const PlacesPage = ({toast, ownerId}) => {
   const navigate = useNavigate();
   const {action} = useParams();
   //states
@@ -60,24 +60,26 @@ const PlacesPage = ({toast}) => {
 
   const addNewPlace = async(e) => {
     e.preventDefault()
-    if (!title || !address || !addedPhotos || !description || !perks || !extraInfo || !checkIn || !checkOut || !maxGuests){
+    if (!ownerId || !title || !address || !addedPhotos || !description || !perks || !extraInfo || !checkIn || !checkOut || !maxGuests){
         toast.error("Missing data. Check all your Input Fields!");
         return;
     }
-    const data = {title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests }
+    const data = {owner:ownerId, title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests }
     try {
-        const response = axios.post("/places", data)
+        const response = await axios.post("/places", data)
         console.log(response);
-        if ((await response).status === 201){
+        if (response.status === 201){
             toast.success("Place created successfully!")
             navigate("/profile/places")
-        }
-        
+            //set all states to null
+            setTitle(""); setAddress(""); setAddedPhotos(null); setDescription(""); setPerks(null); setExtraInfo(""); setCheckIn(""); setCheckOut(""); setMaxGuests(1)
+        }        
     } catch (error) {
         toast.error(error.message)
     }
   }
 
+  //console.log(addedPhotos)
   
   return (
     <div>        
@@ -108,7 +110,7 @@ const PlacesPage = ({toast}) => {
                 </div>
                 <div className='mt-2 gap-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
                   {
-                    addedPhotos.length > 0 && addedPhotos.map(link => (
+                    addedPhotos?.length > 0 && addedPhotos.map(link => (
                         <div className='h-80 flex' key={link}>
                             <img className='rounded-2xl w-full object-cover' src={`http://localhost:5000/uploads/${link}`} alt="" />
                         </div>

@@ -8,6 +8,7 @@ const imageDownloader = require("image-downloader")
 const multer = require('multer')
 dotenv.config()
 const User = require("./models/User")
+const Place = require("./models/Place")
 const bcrypt = require("bcryptjs")
 const fs = require("fs")
 
@@ -119,7 +120,22 @@ app.use("/upload", photosMiddleware.array("photos", 100), async(req,res) => {
     }
 })
 
-
+//create a new place
+app.post("/places", async(req,res) => {
+    console.log(req.body);
+    try {
+        const placeDoc = await Place.create(req.body);
+        if(!placeDoc){
+            res.status(422).json("Unprocessable Entry");
+            return;
+        }
+        res.status(201).json(placeDoc);
+    } catch (error) {
+        console.log(error);
+        res.status(422).json("Unprocessable Entry");
+        return;
+    }
+})
 
 app.listen(PORT, () => {
     console.log(`Backend server is running on http://localhost:${PORT}!`)

@@ -75,7 +75,7 @@ const ProfilePage = () => {
             }
             {
               subpage === "places" && (
-                <PlacesPage toast={toast}/>
+                <PlacesPage ownerId={user.id} toast={toast}/>
               )
             }
         </div>
