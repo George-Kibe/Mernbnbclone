@@ -3,7 +3,7 @@ import {createBrowserRouter,RouterProvider} from "react-router-dom"
 import { UserContextProvider } from './UserContext'
 import axios from 'axios'
 axios.defaults.baseURL = "http://127.0.0.1:5000" 
-//axios.defaults.withCredentials = true;
+//continue from 2:08:40
 //pages
 import IndexPage from "./pages/IndexPage";
 import LoginPage from './pages/LoginPage';
@@ -16,6 +16,7 @@ const router = createBrowserRouter([
   { path:"/login", element: <LoginPage/> },
   { path:"/register", element: <RegisterPage/> },
   { path:"/profile/:subpage?", element: <ProfilePage/> },
+  { path:"/profile/:subpage/:action", element: <ProfilePage/> },
 
   { path:"*", element: <PageNotFound/> },
 ])
