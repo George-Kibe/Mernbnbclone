@@ -12,6 +12,7 @@ const PlaceSchema = new Schema({
     checkIn: String,
     checkOut: String,
     maxGuests: Number,
+    price: Number,
 },
     {timestamps: true}
 )

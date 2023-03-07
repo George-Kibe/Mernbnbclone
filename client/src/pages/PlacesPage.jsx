@@ -18,6 +18,7 @@ const PlacesPage = ({toast, ownerId}) => {
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState("")
   const [maxGuests, setMaxGuests] = useState(1)
+  const [price, setPrice] = useState(0)
 
   const addPhotoByLink = async(e) => {
     e.preventDefault()
@@ -62,14 +63,16 @@ const PlacesPage = ({toast, ownerId}) => {
 
   const savePlace = async(e) => {
     e.preventDefault()
-    if (!ownerId || !title || !address || !addedPhotos || !description || !perks || !extraInfo || !checkIn || !checkOut || !maxGuests){
+    if (!ownerId || !title || !address || !addedPhotos || !description || 
+      !perks || !extraInfo || !checkIn || !checkOut || !maxGuests ||!price){
         toast.error("Missing data. Check all your Input Fields!");
         return;
     }
-    const data = {owner:ownerId, title, address, photos:addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests }
+    const data = {owner:ownerId, title, address, photos:addedPhotos, description, perks, 
+      extraInfo, checkIn, checkOut, maxGuests, price }
     const setStatesNull = ()=> {
       setTitle(""); setAddress(""); setAddedPhotos(null); setDescription(""); setPerks(null); setExtraInfo("");
-      setCheckIn(""); setCheckOut(""); setMaxGuests(1)
+      setCheckIn(""); setCheckOut(""); setMaxGuests(1); setPrice(0)
     }
     //create a new place
     if (actionOrId === "new") {
@@ -107,7 +110,7 @@ const PlacesPage = ({toast, ownerId}) => {
       const {data} =response;
       setTitle(data.title); setAddress(data.address); setAddedPhotos(data.photos); setDescription(data.description);
       setPerks(data.perks); setExtraInfo(data.extraInfo); setCheckIn(data.checkIn); setCheckOut(data.checkOut); 
-      setMaxGuests(data.maxGuests)
+      setMaxGuests(data.maxGuests); setPrice(data.price)
     } catch (error) {
       toast.error("Fetching Place error!")
     }
@@ -115,7 +118,8 @@ const PlacesPage = ({toast, ownerId}) => {
 
   useEffect(() => {
     if (!actionOrId || actionOrId === "new"){
-      setTitle(""); setAddress(""); setAddedPhotos(null); setDescription(""); setPerks(null); setExtraInfo(""); setCheckIn(""); setCheckOut(""); setMaxGuests(1)
+      setTitle(""); setAddress(""); setAddedPhotos(null); setDescription(""); setPerks(null); 
+      setExtraInfo(""); setCheckIn(""); setCheckOut(""); setMaxGuests(1); setPrice(0)
       return
     }
     getPlace()
@@ -210,6 +214,10 @@ const PlacesPage = ({toast, ownerId}) => {
                   <div>
                     <h3 className="m2-2 -mb-1">Maximum Number of Guests</h3>
                     <input value={maxGuests} onChange={e => setMaxGuests(e.target.value)} type="number" placeholder='0' />
+                  </div>
+                  <div>
+                    <h3 className="m2-2 -mb-1">Price</h3>
+                    <input value={price} onChange={e => setPrice(e.target.value)} type="number" placeholder='0' />
                   </div>
                 </div>
                 <button onClick={savePlace} className="primary my-4">Save Place</button>

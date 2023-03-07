@@ -136,6 +136,21 @@ app.post("/places", async(req,res) => {
         return;
     }
 })
+//get all places
+app.get("/places", async(req,res)=> {
+    try {
+        const placeDocs = await Place.find();
+        if (!placeDocs){
+            res.status(404).json("No Places Yet!");
+            return;
+        }
+        res.status(200).json(placeDocs);
+    } catch (error) {
+        res.status(422).json("Unprocessable entry!");
+        return
+    }
+})
+
 
 //get my places
 app.get("/places/:owner", async(req,res)=> {

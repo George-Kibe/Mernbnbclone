@@ -4,7 +4,7 @@ const Perks = ({selected, onChange}) => {
   const handleCbClick = (e) => {
     const {checked, name} = e.target;
     if (checked) {
-        onChange([...selected, name])
+        onChange(selected? [...selected, name] :[name])
     } else {
         onChange([...selected.filter(selectedName => selectedName !== name)])
     }
