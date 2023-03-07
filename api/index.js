@@ -137,6 +137,74 @@ app.post("/places", async(req,res) => {
     }
 })
 
+//get my places
+app.get("/places/:owner", async(req,res)=> {
+    const owner = req.params.owner;
+    if(!owner){
+        res.status(422).json("Unprocessable entry!");
+        return
+    }
+    try {
+        const placeDocs = await Place.find({owner});
+        if (!placeDocs){
+            res.status(404).json("You do not have any Places Yet!");
+            return;
+        }
+        res.status(200).json(placeDocs);
+    } catch (error) {
+        res.status(422).json("Unprocessable entry!");
+        return
+    }
+})
+
+//get one place by id
+app.get("/places/place/:id", async(req, res)=> {
+    const {id} = req.params;
+    if(!id){
+        res.status(422).json("Not Processable!");
+        return
+    }
+    try {
+        placeDoc = await Place.findById(id);
+        res.status(200).json(placeDoc)
+    } catch (error) {
+       res.status(404).json("Not Found!") 
+       return
+    }
+})
+
+
+//update a place
+app.put("/places/:placeId/:ownerId", async(req,res) => {
+    const {ownerId, placeId} = req.params;
+    const placeData = req.body;
+    const placeDoc = await Place.findById(placeId)
+    if (!placeDoc) {
+        res.status(404).json("Unprocessable!");
+        return;
+    }
+    console.log(ownerId, placeDoc.owner.toString())
+    if(ownerId === placeDoc.owner.toString()) {
+        try {
+            placeDoc.set(placeData);
+            await placeDoc.save()
+            res.status(201).json("Updated Successfully!")
+        } catch (error) {
+            res.status(409).json("Insersion conflict");
+            return;
+        }
+    } else{
+        res.status(401).json("Unauthorized!")
+    }
+
+})
+
+
+
 app.listen(PORT, () => {
     console.log(`Backend server is running on http://localhost:${PORT}!`)
 })
+
+
+
+
