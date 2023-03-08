@@ -10,8 +10,9 @@ const IndexPage = () => {
   const getAllPlaces = async() => {
     try {
       const response = await axios.get("/places");
-      console.log(response)
-      setPlaces([...response.data, ...response.data, ...response.data]);
+      //console.log(response)
+      //setPlaces([...response.data, ...response.data, ...response.data]);
+      setPlaces(response.data)
     } catch (error) {
       toast.error(error.message)
     }
@@ -28,7 +29,7 @@ const IndexPage = () => {
       <div className='mt-8 gap-y-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6'>
         {
           places.length > 0 && places.map(place => (
-            <div key={place._id} className="">
+            <Link to={`/place/${place._id}`} key={place._id} className="">
               <div className=" " >
               {
                 place.photos?.[0] && (
@@ -38,8 +39,10 @@ const IndexPage = () => {
               </div>
               <h2 className="text-sm truncate">{place.title}</h2>
               <h3 className="font-bold">{place.address}</h3>
-              <h2 className="text-sm truncate">Kshs. {place.price}</h2>
-            </div>
+              <div className="mt-1">
+                <h2 className="font-bold">Kshs. {place.price}</h2>
+              </div>
+            </Link>
           ))
         }
       </div>

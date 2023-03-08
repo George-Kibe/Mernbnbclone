@@ -3,13 +3,14 @@ import {createBrowserRouter,RouterProvider} from "react-router-dom"
 import { UserContextProvider } from './UserContext'
 import axios from 'axios'
 axios.defaults.baseURL = "http://127.0.0.1:5000" 
-//continue from 2:08:40
+//continue from 5:03:01
 //pages
 import IndexPage from "./pages/IndexPage";
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PageNotFound from './pages/PageNotFound';
 import ProfilePage from './pages/ProfilePage'
+import PlacePage from './pages/PlacePage'
 
 const router = createBrowserRouter([
   { path:"/", element: <IndexPage/> },
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
   { path:"/register", element: <RegisterPage/> },
   { path:"/profile/:subpage?", element: <ProfilePage/> },
   { path:"/profile/:subpage/:actionOrId", element: <ProfilePage/> },
+  { path:"/place/:id", element: <PlacePage/> },
 
   { path:"*", element: <PageNotFound/> },
 ])
