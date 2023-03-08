@@ -58,8 +58,13 @@ const PlacePage = () => {
         place && (
           <div className='mt-8 bg-gray-100 -mx-8 px-8 py-8'>
             <h1 className='text-2-xl'>{place.title}</h1>
-            <a className='my-2 block font-semibold underline' href={`https://maps.google.com/?q=${place.address}`} target="_blank">{place.address}</a>
-            <div className="grid gap-2 grid-cols-[2fr_1fr] relative">
+            <a title={`Search ${place.address} on Google Maps`} className='my-2 flex font-semibold gap-2 items-center' href={`https://maps.google.com/?q=${place.address}`} target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+              </svg>
+              {place.address}
+            </a>
+            <div className="grid gap-2 grid-cols-[2fr_1fr] relative overflow-hidden">
                 <div>
                     {
                       place.photos?.[0] && (
@@ -99,6 +104,39 @@ const PlacePage = () => {
                     </button>
                   )
                 }
+            </div>
+            <div className="my-4 grid grid-cols-1 md:grid-cols-[2fr_1fr] p-4">
+                <div className='px-4'>
+                    <h2 className="font-semibold text-2xl">Description</h2>
+                    {place.description}
+                    <div className='m-4'>
+                        Check In: {place.checkIn} <br />
+                        Check Out: {place.checkOut} <br />
+                        Maximum Guests: {place.maxGuests}
+                    </div>
+                </div>
+                <div className='p-4'>
+                  <div className="bg-white shadow p-4 rounded-2xl">
+                    <div className="text-2xl text-center">
+                      Price: Kshs. {place.price}
+                    </div>
+                   <div className="flex-col md:flex">
+                    <div className="p-4 rounded-2xl">
+                        <label>Check In: </label>
+                        <input type="date" />
+                        </div>
+                        <div className="p-4 rounded-2xl">
+                        <label>Check Out: </label>
+                        <input type="date" />
+                        </div>
+                   </div>
+                    <div className="p-4 rounded-2xl">
+                      <label>Number of Guests: </label>
+                      <input value={1} type="number" />
+                    </div>
+                    <button className="mt-4 primary">Book Now</button>
+                  </div>
+                </div>
             </div>
           </div>
         )
