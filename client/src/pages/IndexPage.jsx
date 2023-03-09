@@ -21,12 +21,13 @@ const IndexPage = () => {
   useEffect(() => {
     getAllPlaces()
   }, [])
+  //<div className='mt-4 grow flex-col items-center'>
   
   return (
     <div className='p-4 flex flex-col min-h-screen'>
       <Toaster position="top-center" reverseOrder={false}></Toaster>
       <Header />
-      <div className='mt-8 gap-y-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6'>
+      <div className='mt-8 gap-y-8 grow grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6'>
         {
           places.length > 0 && places.map(place => (
             <Link to={`/place/${place._id}`} key={place._id} className="">

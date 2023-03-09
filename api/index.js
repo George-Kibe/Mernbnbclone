@@ -216,8 +216,13 @@ app.put("/places/:placeId/:ownerId", async(req,res) => {
 })
 
 app.post("/bookings", async(req,res) => {
+    const {bookingData} = req.body;
+    if(!bookingData) {
+        res.status(422).json("Unprocessable");
+        return;
+    }    
     try {
-        const bookingDoc = await Booking.create(req.body);
+        const bookingDoc = await Booking.create(bookingData);
         if(!bookingDoc) {
             res.status(422).json("Unprocessable");
             return;
@@ -229,7 +234,39 @@ app.post("/bookings", async(req,res) => {
     }
 })
 
+//get bookings for a single user
+app.get("/bookings/:ownerId", async(req,res) => {
+    const {ownerId} = req.params;
+    if (!ownerId){
+        res.status(422).json("Unprocessable!");
+        return;
+    }
+    try {
+        bookingDocs = await Booking.find({owner:ownerId}).populate("place");
+        res.status(200).json(bookingDocs);
+        return;
+    } catch (error) {
+        res.status(422).json("Unprocessable!");
+        return;
+    }
+})
 
+//get single booking for a single user
+app.get("/booking/:id", async(req,res) => {
+    const {id} = req.params;
+    if (!id){
+        res.status(422).json("Unprocessable!");
+        return;
+    }
+    try {
+        bookingDocs = await Booking.findById(id).populate("place");
+        res.status(200).json(bookingDocs);
+        return;
+    } catch (error) {
+        res.status(404).json("Unprocessable!");
+        return;
+    }
+})
 
 app.listen(PORT, () => {
     console.log(`Backend server is running on http://localhost:${PORT}!`)

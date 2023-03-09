@@ -1,15 +1,18 @@
 import React, { useContext } from 'react'
-import { useNavigate, Link, useParams } from 'react-router-dom'
+import { useNavigate, Link, useParams, Navigate } from 'react-router-dom'
 import toast, {Toaster} from "react-hot-toast"
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { UserContext } from '../UserContext'
 import PlacesPage from './PlacesPage'
+import BookingsPage from './BookingsPage'
+import BookingPage from './BookingPage'
 
 const ProfilePage = () => {
   const {user, ready, setUser} = useContext(UserContext);
   const navigate = useNavigate()
   let {subpage} =useParams();
+  const {actionOrId} =useParams();
   if (subpage === undefined) {
     subpage = "profile"
   }
@@ -76,6 +79,16 @@ const ProfilePage = () => {
             {
               subpage === "places" && (
                 <PlacesPage ownerId={user.id} toast={toast}/>
+              )
+            }
+            {
+              subpage === "bookings" && !actionOrId && (
+                <BookingsPage ownerId={user.id} toast={toast}/>
+              )
+            }
+            {
+              subpage === "bookings" && actionOrId && (
+                <BookingPage ownerId={user.id} toast={toast}/>
               )
             }
         </div>

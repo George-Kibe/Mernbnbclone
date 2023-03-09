@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import toast, {Toaster} from "react-hot-toast"
 import {differenceInCalendarDays} from 'date-fns'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../UserContext'
 
 const PlacePage = () => {
+  const {user, ready, setUser} = useContext(UserContext);
   const [place, setPlace] = useState(null);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const {id} = useParams()
+  const navigate = useNavigate();
 
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [numberOfGuests, setNumberOfGuests] = useState(1)
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState(user?.name||'');
+  const [email, setEmail] = useState(user?.email ||"");
   const [phoneNumber, setPhoneNumber] = useState('');
 
   let noOfDays  = 0;
@@ -38,18 +42,28 @@ const PlacePage = () => {
   }
 
   const saveBooking = async() => {
+    if(!user){
+      toast.error("You Need to Login First!");
+      navigate("/login")
+      return;
+    }
     if (!place ||!checkIn ||!checkOut ||!name ||!email ||!phoneNumber ||!noOfDays ||!numberOfGuests){
       toast.error("Missing Details! Confirm you have filled all details!")
       return;
     }
     const bookingData ={
-      place:place._id, checkIn, checkOut, name, email, phoneNumber,
+      owner:user.id, place:place._id, checkIn, checkOut, name, email, phoneNumber,
       price:noOfDays * numberOfGuests * place.price 
     }
     try {
       const response = await axios.post('/bookings', {bookingData});
-      console.log(response);
-      toast.success("Booking Successful")
+      if (response.status === 201){
+        const bookingId = response.data._id;
+        toast.success("Booking Successful");
+        setCheckIn(""); setCheckOut(""); setNumberOfGuests(1);
+        navigate(`/profile/bookings/${bookingId}`)
+      }
+      
     } catch (error) {
       toast.error(error.message)
     }

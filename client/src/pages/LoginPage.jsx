@@ -4,14 +4,15 @@ import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import toast, {Toaster} from "react-hot-toast"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { UserContext } from '../UserContext'
 
 const LoginPage = () => {
+  const {user, ready, setUser} = useContext(UserContext);
+  console.log(user)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-  const {setUser} = useContext(UserContext)
 
   const handleLogin = async(e) => {
     e.preventDefault();
@@ -28,8 +29,15 @@ const LoginPage = () => {
     } catch (error) {
       toast.error("Login Failed. Try Again");
     }
-
   }
+  if(!ready){
+    return "Loading..."
+  }
+  if (ready && user){
+    toast.error("You are already logged In!");
+    return <Navigate to={"/profile"} />
+  }
+  
   return (
     <div className='p-4 flex flex-col min-h-screen'>
       <Toaster position="top-center" reverseOrder={false}></Toaster>
