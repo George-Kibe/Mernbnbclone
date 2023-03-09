@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import toast, {Toaster} from "react-hot-toast"
+import {differenceInCalendarDays} from 'date-fns'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 
@@ -10,6 +11,22 @@ const PlacePage = () => {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const {id} = useParams()
 
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [numberOfGuests, setNumberOfGuests] = useState(1)
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  let noOfDays  = 0;
+  if (checkIn && checkOut){
+    noOfDays = differenceInCalendarDays(new Date(checkOut), new Date(checkIn));
+    if (noOfDays < 0) {
+      toast.error("Checkout date cannot be earlier than Checkin date!")
+    }
+  }
+
   const getPlace = async() => {
     try {
         const response = await axios.get(`/places/place/${id}`);
@@ -17,6 +34,24 @@ const PlacePage = () => {
         setPlace(response.data)
     } catch (error) {
         toast.error(error.message)
+    }
+  }
+
+  const saveBooking = async() => {
+    if (!place ||!checkIn ||!checkOut ||!name ||!email ||!phoneNumber ||!noOfDays ||!numberOfGuests){
+      toast.error("Missing Details! Confirm you have filled all details!")
+      return;
+    }
+    const bookingData ={
+      place:place._id, checkIn, checkOut, name, email, phoneNumber,
+      price:noOfDays * numberOfGuests * place.price 
+    }
+    try {
+      const response = await axios.post('/bookings', {bookingData});
+      console.log(response);
+      toast.success("Booking Successful")
+    } catch (error) {
+      toast.error(error.message)
     }
   }
 
@@ -30,7 +65,7 @@ const PlacePage = () => {
       <div className="absolute inset-1 bg-white m-h-screen">
         <div className="p-8 grid gap-4">
           <div>
-            <h2 className="text-center text-3xl">Photos of {place.title}</h2>
+            <h2 className="text-center text-3xl mr-36">Photos of {place.title}</h2>
             <button onClick={() => setShowAllPhotos(false)} className="fixed shadow-black flex gap-1 py-2 px-4 rounded-2xl right-12 top-8">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -68,7 +103,9 @@ const PlacePage = () => {
                 <div>
                     {
                       place.photos?.[0] && (
-                        <img className='aspect-square object-cover rounded-xl' src={`http://localhost:5000/uploads/${place.photos[0]}`} alt="place photo" />
+                        <img className='aspect-square object-cover rounded-xl cursor-pointer' 
+                          onClick={() => setShowAllPhotos(true)}
+                          src={`http://localhost:5000/uploads/${place.photos[0]}`} alt="place photo" />
                       )
                     }
                 </div>
@@ -76,7 +113,9 @@ const PlacePage = () => {
                     <div className=''>
                       {
                         place.photos.length > 1 ? (
-                          <img className='aspect-square object-cover rounded-xl' src={`http://localhost:5000/uploads/${place.photos[1]}`} alt="place photo" />
+                          <img className='aspect-square object-cover rounded-xl cursor-pointer' 
+                            onClick={() => setShowAllPhotos(true)}
+                            src={`http://localhost:5000/uploads/${place.photos[1]}`} alt="place photo" />
                         )
                         :(
                             <p>No Photo</p>
@@ -86,7 +125,9 @@ const PlacePage = () => {
                     <div className='pt-2'>
                       {
                         place.photos.length > 2 ? (
-                          <img className='aspect-square object-cover pb-2 rounded-xl' src={`http://localhost:5000/uploads/${place.photos[2]}`} alt="place photo" />
+                          <img className='aspect-square object-cover pb-2 rounded-xl cursor-pointer' 
+                            onClick={() => setShowAllPhotos(true)}
+                            src={`http://localhost:5000/uploads/${place.photos[2]}`} alt="place photo" />
                         )
                         :(
                             <p className='text-center'>No Photo</p>
@@ -114,6 +155,16 @@ const PlacePage = () => {
                         Check Out: {place.checkOut} <br />
                         Maximum Guests: {place.maxGuests}
                     </div>
+                    
+                    {
+                      place.extraInfo && (
+                        <div className="mt-4 text-sm leading-4">
+                          <h2 className="font-semibold text-2xl">Additional Information</h2>
+                          {place.extraInfo}
+                        </div>
+                      )
+                    }
+                   
                 </div>
                 <div className='p-4'>
                   <div className="bg-white shadow p-4 rounded-2xl">
@@ -123,18 +174,39 @@ const PlacePage = () => {
                    <div className="flex-col md:flex">
                     <div className="p-4 rounded-2xl">
                         <label>Check In: </label>
-                        <input type="date" />
+                        <input value={checkIn} onChange={e => setCheckIn(e.target.value)} type="date" />
                         </div>
                         <div className="p-4 rounded-2xl">
                         <label>Check Out: </label>
-                        <input type="date" />
+                        <input value={checkOut} onChange={e => setCheckOut(e.target.value)} type="date" />
                         </div>
                    </div>
                     <div className="p-4 rounded-2xl">
                       <label>Number of Guests: </label>
-                      <input value={1} type="number" />
+                      <input value={numberOfGuests} onChange={e => setNumberOfGuests(e.target.value)} type="number" />
                     </div>
-                    <button className="mt-4 primary">Book Now</button>
+                    {
+                      noOfDays > 0 && (
+                        <div className="py-3 px-4 border-t">
+                          <label> Your Full Name</label>
+                          <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your Name"/>
+                          <label> Your Email</label>
+                          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@gmail.com" />
+                          <label> Your Phone Number </label>
+                          <input type="text" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder="+254..." />
+                        </div>
+                      )
+                    }
+                    <button onClick={saveBooking} className="mt-4 primary">
+                      Book Now 
+                      {
+                        noOfDays > 0 && (
+                          <span className='mx-1'>
+                            for Kshs. {noOfDays * numberOfGuests * place.price }
+                          </span>
+                        )
+                      }
+                    </button>
                   </div>
                 </div>
             </div>

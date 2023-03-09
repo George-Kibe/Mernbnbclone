@@ -7,6 +7,7 @@ const dotenv = require("dotenv")
 const imageDownloader = require("image-downloader")
 const multer = require('multer')
 dotenv.config()
+const Booking = require("./models/Booking")
 const User = require("./models/User")
 const Place = require("./models/Place")
 const bcrypt = require("bcryptjs")
@@ -212,6 +213,20 @@ app.put("/places/:placeId/:ownerId", async(req,res) => {
         res.status(401).json("Unauthorized!")
     }
 
+})
+
+app.post("/bookings", async(req,res) => {
+    try {
+        const bookingDoc = await Booking.create(req.body);
+        if(!bookingDoc) {
+            res.status(422).json("Unprocessable");
+            return;
+        }
+        res.status(201).json(bookingDoc)
+    } catch (error) {
+        res.status(422).json("Unprocessable");
+        return; 
+    }
 })
 
 
