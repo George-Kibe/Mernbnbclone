@@ -19,16 +19,18 @@ const PlacesPage = ({toast, ownerId}) => {
   const [checkOut, setCheckOut] = useState("")
   const [maxGuests, setMaxGuests] = useState(1)
   const [price, setPrice] = useState(0)
+  const [uploading, setUploading] = useState(false)
 
   const addPhotoByLink = async(e) => {
     e.preventDefault()
+    toast.success("Uploading image", { autoClose: 5000,})
     try {
         const response = await axios.post("/upload-by-link", {link:photoLink})
-        console.log(response.status)
+        //console.log(response.status)
         toast.success("adding photo")
         const {data:filename} = response;
         setAddedPhotos(prev => {
-            console.log(prev)
+            //console.log(prev)
             return prev? [...prev, filename] : [filename]
         });
         toast.success("Photo uploaded successfully")
@@ -42,6 +44,7 @@ const PlacesPage = ({toast, ownerId}) => {
   const uploadPhoto = async(e) => {
     const files = e.target.files;
     //console.log(files[0])
+    toast.success("Uploading image(s)", { autoClose: 5000,})
     const data = new FormData();
     for (let i = 0; i < files.length; i++) {
         data.append("photos", files[i]);        
@@ -55,7 +58,7 @@ const PlacesPage = ({toast, ownerId}) => {
         setAddedPhotos(prev => {
             return prev? [...prev, ...filenames] : [...filenames]
         });
-        toast.success("Photo uploaded successfully")
+        toast.success("Photo(s) uploaded successfully")
     } catch (error) {
         toast.error(error.message)
     }
@@ -139,7 +142,6 @@ const PlacesPage = ({toast, ownerId}) => {
   }
   
   //console.log(addedPhotos)
-  
   return (
     <div>        
         {            
@@ -164,7 +166,7 @@ const PlacesPage = ({toast, ownerId}) => {
                   {
                     addedPhotos?.length > 0 && addedPhotos.map(link => (
                       <div className='h-80 flex relative' key={link}>
-                        <img className='rounded-2xl w-full object-cover' src={`http://localhost:5000/uploads/${link}`} alt="" />
+                        <img className='rounded-2xl w-full object-cover' src={link} alt="" />
                         <button onClick={(e) => removePhoto(e, link)} className="absolute bottom-1 right-1 text-white bg-black bg-opacity-50 rounded-2xl p-2">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />

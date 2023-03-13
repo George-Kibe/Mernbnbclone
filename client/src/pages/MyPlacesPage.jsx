@@ -37,7 +37,7 @@ const MyPlacesPage = ({toast, ownerId}) => {
               <div className="flex w-32 h-32 shrink-0">
                 {
                   place.photos.length > 0 && (
-                    <img className='object-cover rounded-2xl' src={`http://localhost:5000/uploads/${place.photos[0]}`} alt="" />
+                    <img className='object-cover rounded-2xl' src={place.photos[0]} alt="" />
                   )
                 }
               </div>

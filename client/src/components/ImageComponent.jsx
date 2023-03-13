@@ -9,7 +9,7 @@ const ImageComponent = ({place, index=0, className=null}) => {
     className = "object-cover";
   }
   return (
-    <img className={className} src={`http://localhost:5000/uploads/${place.photos[index]}`} alt="place Photo" />
+    <img className={className} src={place.photos[index]} alt="place Photo" />
   )
 }
 

@@ -9,15 +9,15 @@ export const UserContextProvider = ({children}) => {
     const [ready, setReady] = useState(false)
     const token = localStorage.getItem("token")
     
-    useEffect(() => {
-      
+    useEffect(() => {      
       if (token){
         const decoded = jwt_decode(token);
         setUser(decoded)
         setReady(true)
+      }else{
+        setReady(true)
       }
-    }, [token])
-    
+    }, [token])   
 
     return (
         <UserContext.Provider value={{user, setUser, ready}}>

@@ -90,7 +90,7 @@ const PlacePage = () => {
           {
             place?.photos?.length > 0 && place.photos.map (photo => (
               <div key={photo}>
-                <img className='rounded-xl' src={`http://localhost:5000/uploads/${photo}`} alt="" />
+                <img className='rounded-xl' src={photo} alt="" />
               </div>
             ))
           }
@@ -119,7 +119,7 @@ const PlacePage = () => {
                       place.photos?.[0] && (
                         <img className='aspect-square object-cover rounded-xl cursor-pointer' 
                           onClick={() => setShowAllPhotos(true)}
-                          src={`http://localhost:5000/uploads/${place.photos[0]}`} alt="place photo" />
+                          src={place.photos[0]} alt="place photo" />
                       )
                     }
                 </div>
@@ -129,7 +129,7 @@ const PlacePage = () => {
                         place.photos.length > 1 ? (
                           <img className='aspect-square object-cover rounded-xl cursor-pointer' 
                             onClick={() => setShowAllPhotos(true)}
-                            src={`http://localhost:5000/uploads/${place.photos[1]}`} alt="place photo" />
+                            src={place.photos[1]} alt="place photo" />
                         )
                         :(
                             <p>No Photo</p>
@@ -141,7 +141,7 @@ const PlacePage = () => {
                         place.photos.length > 2 ? (
                           <img className='aspect-square object-cover pb-2 rounded-xl cursor-pointer' 
                             onClick={() => setShowAllPhotos(true)}
-                            src={`http://localhost:5000/uploads/${place.photos[2]}`} alt="place photo" />
+                            src={place.photos[2]} alt="place photo" />
                         )
                         :(
                             <p className='text-center'>No Photo</p>
