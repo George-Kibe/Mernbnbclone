@@ -142,7 +142,7 @@ app.use("/api/upload-by-link", async(req, res) => {
 //uploading photos to s3
 const photosMiddleware = multer({dest:"/tmp"})
 app.post("/api/upload", photosMiddleware.array("photos", 100), async(req,res) => {
-    //mongoose.connect(process.env.MONGO_URL)
+    mongoose.connect(process.env.MONGO_URL)
     //console.log(req.files)
     try {
         const uploadedFiles = [];
