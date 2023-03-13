@@ -66,7 +66,7 @@ const uploadToS3 = async(path, originalFileName, mimetype) => {
 
 
 
-app.post("/users/register", async(req, res) => {
+app.post("/api/users/register", async(req, res) => {
     mongoose.connect(process.env.MONGO_URL)
     const {name, email, password} = req.body;
     if(!name || !email ||!password){
@@ -86,7 +86,7 @@ app.post("/users/register", async(req, res) => {
     }
 })
 
-app.post('/users/login', async(req,res) => {
+app.post('/api/users/login', async(req,res) => {
     mongoose.connect(process.env.MONGO_URL)
     const {email, password} = req.body;
     const userDoc  = await User.findOne({email});
@@ -113,7 +113,7 @@ app.post('/users/login', async(req,res) => {
     }
 })
 
-app.get("/users/profile", async(req, res) => {
+app.get("/api/users/profile", async(req, res) => {
     mongoose.connect(process.env.MONGO_URL)
     const token = req.cookies;
 
@@ -121,7 +121,7 @@ app.get("/users/profile", async(req, res) => {
 })
 
 
-app.use("/upload-by-link", async(req, res) => {
+app.use("/api/upload-by-link", async(req, res) => {
     //mongoose.connect(process.env.MONGO_URL)
     const {link} = req.body;
     const newName = "photo" + Date.now() + ".jpg";
@@ -141,7 +141,7 @@ app.use("/upload-by-link", async(req, res) => {
 
 //uploading photos to s3
 const photosMiddleware = multer({dest:"/tmp"})
-app.post("/upload", photosMiddleware.array("photos", 100), async(req,res) => {
+app.post("/api/upload", photosMiddleware.array("photos", 100), async(req,res) => {
     //mongoose.connect(process.env.MONGO_URL)
     //console.log(req.files)
     try {
@@ -183,7 +183,7 @@ app.post("/upload", photosMiddleware.array("photos", 100), async(req,res) => {
 // })
 
 //create a new place
-app.post("/places", async(req,res) => {
+app.post("/api/places", async(req,res) => {
     //console.log(req.body);
     mongoose.connect(process.env.MONGO_URL)
     try {
@@ -200,7 +200,7 @@ app.post("/places", async(req,res) => {
     }
 })
 //get all places
-app.get("/places", async(req,res)=> {
+app.get("/api/places", async(req,res)=> {
     mongoose.connect(process.env.MONGO_URL)
     try {
         const placeDocs = await Place.find();
@@ -217,7 +217,7 @@ app.get("/places", async(req,res)=> {
 
 
 //get my places
-app.get("/places/:owner", async(req,res)=> {
+app.get("/api/places/:owner", async(req,res)=> {
     mongoose.connect(process.env.MONGO_URL)
     const owner = req.params.owner;
     if(!owner){
@@ -238,7 +238,7 @@ app.get("/places/:owner", async(req,res)=> {
 })
 
 //get one place by id
-app.get("/places/place/:id", async(req, res)=> {
+app.get("/api/places/place/:id", async(req, res)=> {
     mongoose.connect(process.env.MONGO_URL)
     const {id} = req.params;
     if(!id){
@@ -256,7 +256,7 @@ app.get("/places/place/:id", async(req, res)=> {
 
 
 //update a place
-app.put("/places/:placeId/:ownerId", async(req,res) => {
+app.put("/api/places/:placeId/:ownerId", async(req,res) => {
     mongoose.connect(process.env.MONGO_URL)
     const {ownerId, placeId} = req.params;
     const placeData = req.body;
@@ -281,7 +281,7 @@ app.put("/places/:placeId/:ownerId", async(req,res) => {
 
 })
 
-app.post("/bookings", async(req,res) => {
+app.post("/api/bookings", async(req,res) => {
     mongoose.connect(process.env.MONGO_URL)
     const {bookingData} = req.body;
     if(!bookingData) {
@@ -302,7 +302,7 @@ app.post("/bookings", async(req,res) => {
 })
 
 //get bookings for a single user
-app.get("/bookings/:ownerId", async(req,res) => {
+app.get("/api/bookings/:ownerId", async(req,res) => {
     mongoose.connect(process.env.MONGO_URL)
     const {ownerId} = req.params;
     if (!ownerId){
@@ -320,7 +320,7 @@ app.get("/bookings/:ownerId", async(req,res) => {
 })
 
 //get single booking for a single user
-app.get("/booking/:id", async(req,res) => {
+app.get("/api/booking/:id", async(req,res) => {
     mongoose.connect(process.env.MONGO_URL)
     const {id} = req.params;
     if (!id){
